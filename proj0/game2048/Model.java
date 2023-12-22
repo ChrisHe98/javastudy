@@ -113,6 +113,23 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        if (side == Side.NORTH) {
+            for (int col = 0; col < board.size(); col += 1){
+                boolean runchange =  processSingleColumn(col);
+                if(runchange){
+                    changed = runchange;
+                }
+            }
+        }else {
+            board.setViewingPerspective(side);
+            for (int col = 0; col < board.size(); col += 1){
+                boolean runchange =  processSingleColumn(col);
+                if(runchange){
+                    changed = runchange;
+                }
+            }
+            board.setViewingPerspective(Side.NORTH);
+        }
 
         checkGameOver();
         if (changed) {
@@ -120,6 +137,45 @@ public class Model extends Observable {
         }
         return changed;
     }
+
+
+
+
+    public boolean processSingleColumn(int col) {
+        boolean changed = false;
+        int skipped = 0;
+        for (int row = board.size() -2;row >= 0;row -= 1){
+            if (board.tile(col,row) == null){
+                skipped += 1;
+                continue;
+            }
+            if (board.tile(col, row)!= null
+                    && board.tile(col, row + 1 + skipped)!= null
+                    && board.tile(col, row).value() == board.tile(col,row + 1 + skipped).value()){
+                Tile t = board.tile(col, row);
+                board.move(col, row+1 + skipped, t);
+                score += board.tile(col, row+1 + skipped).value();
+                changed = true;
+            }
+            if (board.tile(col, row)!= null
+                    && board.tile(col, row + 1 + skipped)!= null
+                    && board.tile(col, row).value() != board.tile(col,row + 1 + skipped).value()
+                    && skipped >0){
+                Tile t = board.tile(col, row);
+                board.move(col, row+ skipped, t);
+                changed = true;
+            }
+            if (board.tile(col, row)!= null
+                    && board.tile(col,row + 1 + skipped)== null){
+                Tile t = board.tile(col, row);
+                board.move(col, row+1 + skipped, t);
+                skipped += 1;
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
