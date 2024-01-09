@@ -159,11 +159,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public T get(int index) {
-        if (items[index] == null) {
-            return null;
-        }else{
             return items[index];
-        }
     }
 
 
