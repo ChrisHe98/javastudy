@@ -6,20 +6,20 @@ import java.util.Iterator;
 public class MaxArrayDeque<T> extends ArrayDeque<T> {
     private Comparator<T> c1;
 
-    public MaxArrayDeque(Comparator<T> c){
+    public MaxArrayDeque(Comparator<T> c) {
         super();
         c1 = c;
     }
 
-    public T max(){
-        if (isEmpty()){
+    public T max() {
+        if (isEmpty()) {
             return null;
         }
-
-        T maxItem = getFirst();
-        for (T item : this){
-            int cmp = c1.compare(item,maxItem);
-            if (cmp>0){
+        Iterator<T> aseer = this.iterator();
+        T maxItem = aseer.next();
+        for (T item : this) {
+            int cmp = c1.compare(item, maxItem);
+            if (cmp > 0) {
                 maxItem = item;
             }
         }
@@ -30,7 +30,8 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         if (isEmpty()) {
             return null;
         }
-        T maxItem = getFirst();
+        Iterator<T> aseer = this.iterator();
+        T maxItem = aseer.next();
         for (T item : this) {
             int cmp = c.compare(item, maxItem);
             if (cmp > 0) {

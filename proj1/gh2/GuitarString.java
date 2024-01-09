@@ -2,7 +2,7 @@ package gh2;
 
 import deque.LinkedListDeque;
 import deque.Deque;
-// TODO: maybe more imports
+
 
 //Note: This file will not compile until you complete the Deque implementations
 public class GuitarString {
@@ -14,17 +14,13 @@ public class GuitarString {
 
     /* Buffer for storing sound data. */
     private Deque<Double> buffer;
-    public int capacity;
+    private int capacity;
 
     /* Create a guitar string of the given frequency.  */
     public GuitarString(double frequency) {
-        // TODO: Create a buffer with capacity = SR / frequency. You'll need to
-        //       cast the result of this division operation into an int. For
-        //       better accuracy, use the Math.round() function before casting.
-        //       Your should initially fill your buffer array with zeros.
-        capacity = (int) Math.round(SR/frequency);
+        capacity = (int) Math.round(SR / frequency);
         buffer = new LinkedListDeque<>();
-        for (int i = 0; i< capacity; i ++){
+        for (int i = 0; i < capacity; i++) {
             buffer.addLast((double) 0);
         }
     }
@@ -32,15 +28,12 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-        // TODO: Dequeue everything in buffer, and replace with random numbers
-        //       between -0.5 and 0.5. You can get such a number by using:
-        //       double r = Math.random() - 0.5;
         //
         //       Make sure that your random numbers are different from each
         //       other. This does not mean that you need to check that the numbers
         //       are different from each other. It means you should repeatedly call
         //       M4ath.random() - 0.5 to generate new random numbers for each array index.
-        for (int i = 0; i< buffer.size(); i ++){
+        for (int i = 0; i < buffer.size(); i++) {
             buffer.removeLast();
             double r = Math.random() - 0.5;
             buffer.addFirst(r);
@@ -51,19 +44,15 @@ public class GuitarString {
      * the Karplus-Strong algorithm.
      */
     public void tic() {
-        // TODO: Dequeue the front sample and enqueue a new sample that is
-        //       the average of the two multiplied by the DECAY factor.
-        //       **Do not call StdAudio.play().**
-            double first_value = buffer.removeFirst();
-            double second_value = buffer.get(0);
-            double newDouble = DECAY * (first_value + second_value) / 2;
+            double firstValue = buffer.removeFirst();
+            double secondValue = buffer.get(0);
+            double newDouble = DECAY * (firstValue + secondValue) / 2;
             buffer.addLast(newDouble);
     }
 
     /* Return the double at the front of the buffer. */
     public double sample() {
-        // TODO: Return the correct thing.
         return buffer.get(0);
     }
 }
-    // TODO: Remove all comments that say TODO when you're done.
+
