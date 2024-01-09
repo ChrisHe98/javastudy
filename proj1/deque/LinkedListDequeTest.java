@@ -133,8 +133,8 @@ public void getFunctionTest(){
         lld1.addFirst(4);
         lld1.addLast(5); //4 3 5
         int z = lld1.get(0);
-        int x = lld1.getRecursion(1);
-        int y = lld1.getRecursion(2);
+        int x = lld1.getRecursive(1);
+        int y = lld1.getRecursive(2);
         assertEquals(4, z);
         assertEquals(3, x);
         assertEquals(5, y);

@@ -122,17 +122,14 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (size == 0) {
             return null;
         }
+        // Adjust nextLast before accessing the array to avoid going out of bounds.
+        nextLast = (nextLast - 1 + items.length) % items.length;
+        T lastItem = items[nextLast];
+        items[nextLast] = null;  // We've already adjusted nextLast, so this is safe.
+        size--;
         if ((size < items.length / 4) && (items.length >= 16)) {
             resize(items.length / 2);
         }
-        T lastItem = getLast();
-        items[nextLast - 1] = null;
-        if (nextLast == 0) {
-            nextLast = items.length - 1;
-        } else {
-            nextLast--;
-        }
-        size--;
         return lastItem;
     }
 

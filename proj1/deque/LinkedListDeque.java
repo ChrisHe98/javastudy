@@ -107,7 +107,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return p.item;
     }
 
-    public T getRecursion(int index) {
+    public T getRecursive(int index) {
         return getRecursionHelper(sentinel.next, index);
     }
 
