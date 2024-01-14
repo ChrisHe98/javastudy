@@ -18,17 +18,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     /** Resizes the underlying array to the target capacity. */
     private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
-        if ((nextLast > nextFirst + 1) || size == 0) {
-            System.arraycopy(items, nextFirst + 1, a, 0, size);
+        if (size == 0) {
+            System.arraycopy(items,0, a, 0, size);
+        } else if (getLastIndex() >= getFirstIndex()) {
+            System.arraycopy(items, getFirstIndex(), a, 0, size);
         } else {
-            if (nextFirst == items.length - 1) {
-                System.arraycopy(items, 0, a, 0, size);
-            } else {
-                System.arraycopy(items, nextFirst + 1, a, 0, items.length - 1 - nextFirst);
-                System.arraycopy(items, 0, a, items.length - 1 - nextFirst, nextLast);
-            }
+            System.arraycopy(items, getFirstIndex(), a, 0, items.length - getFirstIndex());
+            System.arraycopy(items, 0, a, items.length - getFirstIndex(), getLastIndex() + 1);
         }
+        int sizeTemp = size;
         items = a;
+        size = sizeTemp;
         nextFirst = items.length - 1;
         nextLast = size;
     }
@@ -36,7 +36,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     /** Adds x to the front of the list. */
     public void addFirst(T x) {
         if (size == items.length) {
-            resize((int) Math.round(size * 2));
+            resize(size * 2);
         }
         items[nextFirst] = x;
         if (nextFirst == 0) {
@@ -61,23 +61,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         size++;
     }
 
-    /** Returns the first item in the list. */
-    private T getFirst() {
-        if (nextFirst == items.length - 1) {
-            return items[0];
-        } else {
-            return items[nextFirst + 1];
-        }
-    }
-
-    /** returns last item in the list */
-    private T getLast() {
-        if (nextLast == 0) {
-            return items[items.length - 1];
-        } else {
-            return items[nextLast - 1];
-        }
-    }
 
     /** Returns the size of the list. */
     public int size() {
@@ -85,17 +68,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public void printDeque() {
-        if (nextFirst < nextLast) {
-            for (int i = nextFirst + 1; i < nextLast; i++) {
-                System.out.print(items[i] + " ");
-            }
-        } else if (nextFirst > nextLast) {
-            for (int i = nextFirst + 1; i < items.length; i++) {
-                System.out.print(items[i] + " ");
-            }
-            for (int i = 0; i < nextLast; i++) {
-                System.out.print(items[i] + " ");
-            }
+        for (T item : items) {
+            System.out.print(items + " ");
         }
         System.out.println();
     }
@@ -104,26 +78,30 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (size == 0) {
             return null;
         }
+        nextFirst = getFirstIndex();
+        T firstItem = items[nextFirst];
+        items[nextFirst] = null;
+        size--;
         if ((size < items.length / 4) && (items.length >= 16)) {
             resize(items.length / 2);
         }
-        T firstItem = getFirst();
-        items[nextFirst] = null;
-        if (nextFirst == items.length - 1) {
-            nextFirst = 0;
-        } else {
-            nextFirst++;
-        }
-        size--;
         return firstItem;
+    }
+    private int getFirstIndex () {
+        int firstIndex;
+        if (nextFirst == items.length - 1) {
+            firstIndex = 0;
+        } else {
+            firstIndex = nextFirst + 1;
+        }
+        return firstIndex;
     }
 
     public T removeLast() {
         if (size == 0) {
             return null;
         }
-        // Adjust nextLast before accessing the array to avoid going out of bounds.
-        nextLast = (nextLast - 1 + items.length) % items.length;
+        nextLast = getLastIndex();
         T lastItem = items[nextLast];
         items[nextLast] = null;  // We've already adjusted nextLast, so this is safe.
         size--;
@@ -133,35 +111,43 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return lastItem;
     }
 
+    private int getLastIndex () {
+        int lastIndex;
+        if (nextFirst == 0) {
+            lastIndex = items.length - 1;
+        } else {
+            lastIndex = nextLast - 1;
+        }
+        return lastIndex;
+    }
+
     public T get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
-        int start = nextFirst + 1;
-        if (start + index >= items.length) {
-            index -= (items.length - start);
-            return items[index];
-        } else {
-            return items[start + index];
+        Iterator<T> aseer = this.iterator();
+        T getItem = aseer.next();
+        for (int i = index; i > 0; i--) {
+            getItem = aseer.next();
         }
+        return getItem;
     }
+
+
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null) {
+        if (!(o instanceof Deque)) {
             return false;
         }
-        if (!(o instanceof ArrayDeque)) {
-            return false;
-        }
-        ArrayDeque<?> other = (ArrayDeque<?>) o;
-        if (this.size() != other.size()) {
+        Deque<T> otherDeque = (Deque<T>) o;
+        if (this.size() !=  otherDeque.size()) {
             return false;
         }
         for (int i = 0; i < this.size(); i++) {
-            if (!this.get(i).equals(other.get(i))) {
+            if (!this.get(i).equals(otherDeque.get(i))) {
                 return false;
             }
         }
@@ -178,11 +164,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
         private ArrayIterator() {
             iterated = 0;
-            if (nextFirst == items.length - 1) {
-                wizPos = 0;
-            } else {
-                wizPos = nextFirst + 1;
-            }
+            wizPos = getFirstIndex();
         }
 
         public boolean hasNext() {
