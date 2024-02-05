@@ -1,10 +1,12 @@
 package capers;
 
 import java.io.File;
+import java.io.IOException;
+
 import static capers.Utils.*;
 
 /** A repository for Capers 
- * @author TODO
+ * @author Junhui Xu
  * The structure of a Capers Repository is as follows:
  *
  * .capers/ -- top level folder for all persistent data in your lab12 folder
@@ -18,8 +20,7 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = null; // TODO Hint: look at the `join`
-                                            //      function in Utils
+    static final File CAPERS_FOLDER = Utils.join(".capers");
 
     /**
      * Does required filesystem operations to allow for persistence.
@@ -31,7 +32,32 @@ public class CapersRepository {
      *    - story -- file containing the current story
      */
     public static void setupPersistence() {
-        // TODO
+        if (!CAPERS_FOLDER.exists()) {
+            boolean isCapersFolderCreated = CAPERS_FOLDER.mkdir();
+            if (!isCapersFolderCreated) {
+                // Handle the case where the .capers directory could not be created.
+                System.err.println("Could not create the .capers directory.");
+                return; // Stop execution or handle the error as appropriate.
+            }
+        }
+
+        if (!Dog.DOG_FOLDER.exists()) {
+            boolean isDogsFolderCreated = Dog.DOG_FOLDER.mkdir();
+            if (!isDogsFolderCreated) {
+                // Handle the case where the dogs directory could not be created.
+                System.err.println("Could not create the dogs directory within .capers.");
+                return; // Stop execution or handle the error as appropriate.
+            }
+        }
+
+        final File story = Utils.join(".capers", "story");
+        try {
+            if (!story.exists()) {
+                story.createNewFile();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create the story file.", e);
+        }
     }
 
     /**
@@ -40,7 +66,11 @@ public class CapersRepository {
      * @param text String of the text to be appended to the story
      */
     public static void writeStory(String text) {
-        // TODO
+        File story = Utils.join(".capers", "story");
+        String existingContent = readContentsAsString(story);
+        String newContent = existingContent + text + "\n";
+        writeContents(story, newContent);
+        System.out.println(newContent);
     }
 
     /**
@@ -49,7 +79,9 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
     public static void makeDog(String name, String breed, int age) {
-        // TODO
+        Dog m = new Dog(name, breed, age);
+        m.saveDog();
+        System.out.println(m.toString());
     }
 
     /**
@@ -59,6 +91,8 @@ public class CapersRepository {
      * @param name String name of the Dog whose birthday we're celebrating.
      */
     public static void celebrateBirthday(String name) {
-        // TODO
+        Dog m = Dog.fromFile(name);
+        m.haveBirthday();
+        m.saveDog();
     }
 }
