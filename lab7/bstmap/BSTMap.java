@@ -52,12 +52,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
                 } else {
                     this.left = new BSTNode(key, value, null, null);
                 }
-            }
+            } else {
             if (this.right != null) {
                 this.right.insert(key, value);
             } else {
                 this.right = new BSTNode(key, value, null, null);
             }
+        }
         }
         V findValue(K key) {
             if (key.equals(this.key)) return this.value;
@@ -81,6 +82,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
     /** Removes all the mappings from this map. */
     public void clear() {
         rootNode = null;
+        size = 0;
     }
 
     /* Returns true if this map contains a mapping for the specified key. */
@@ -97,11 +99,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
             return null;
         } else return rootNode.findValue(key);
     }
-
+    private int size = 0;
     /* Returns the number of key-value mappings in this map. */
     public int size() {
-        if (rootNode == null) return 0;
-        return rootNode.size();
+        return size;
     }
 
     /* Associates the specified value with the specified key in this map. */
@@ -111,6 +112,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
         } else {
             rootNode.insert(key, value);
         }
+        size ++;
     }
 
     /* Returns a Set view of the keys contained in this map. Not required for Lab 7.
@@ -138,11 +140,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
     }
 
     private void printInOrder(BSTNode node) {
-        if (node != null) {
-            printInOrder(node.left);
-            System.out.println(node.key);
-            printInOrder(node.right);
+        if (node == null) {
+            return;
         }
+        printInOrder(node.left);
+        System.out.println(node.key.toString() + " -> " + node.value.toString());
+        printInOrder(node.right);
     }
 
     private int visited;
