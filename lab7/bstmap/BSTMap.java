@@ -27,7 +27,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
     }
 
 
-    BSTNode rootNode;
+    private BSTNode rootNode;
 
     private class BSTNode {
         K key;
@@ -72,8 +72,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
         }
 
         int size() {
-            if (this.key == null) return 0;
-            return this.left.size() + this.right.size();
+            int leftSize = (left == null) ? 0 : left.size();
+            int rightSize = (right == null) ? 0 : right.size();
+            return 1 + leftSize + rightSize;
         }
     }
 
@@ -84,7 +85,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
 
     /* Returns true if this map contains a mapping for the specified key. */
     public boolean containsKey(K key) {
-        return (rootNode.findValue(key) != null);
+        if (rootNode == null) return false;
+        return rootNode.findValue(key) != null;
     }
 
     /* Returns the value to which the specified key is mapped, or null if this
@@ -98,6 +100,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
 
     /* Returns the number of key-value mappings in this map. */
     public int size() {
+        if (rootNode == null) return 0;
         return rootNode.size();
     }
 
@@ -144,7 +147,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K,V> {
 
     private int visited;
 
-    public K get(int i) {
+    private K get(int i) {
         visited = 0; // Reset visited count
         return select(rootNode, i).getKey();
     }
