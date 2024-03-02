@@ -1,0 +1,30 @@
+Random tests:
+Enter # strings to insert into hashmap.ULLMap: 10000
+class hashmap.ULLMap: 0.48 sec
+
+Enter # strings to insert into your hashmap.MyHashMap: 10000
+class hashmap.MyHashMap: 0.01 sec
+
+Enter # strings to insert into Java's HashMap: 10000
+Java's Built-in HashMap: 0.00 sec
+
+Ordered tests:
+Enter # strings to insert into hashmap.ULLMap: 10000
+class hashmap.ULLMap: 0.83 sec
+
+Enter # strings to insert into hashmap.MyHashMap: 10000
+class hashmap.MyHashMap: 0.03 sec
+
+Enter # strings to insert into Java's HashMap: 10000
+Java's Built-in HashMap: 0.01 sec
+
+
+Using a BSTMap/TreeMap instead of a HashMap is preferable when you need to maintain order among the keys. TreeMap sorts the keys according to their natural ordering or by a specified comparator when the map is created. This feature is beneficial for applications requiring sorted key-value pairs, range searches, or ordered key iteration. In contrast, HashMap offers faster operations (O(1) time complexity for get and put under ideal conditions) but does not maintain any order among keys.
+
+
+Enter # strings to insert into each map: 1000000
+class hashmap.MyHashMapALBuckets: 0.64 sec
+class hashmap.MyHashMapLLBuckets: 0.70 sec
+class hashmap.MyHashMapTSBuckets: 0.89 sec
+class hashmap.MyHashMapHSBuckets: 1.15 sec
+class hashmap.MyHashMapPQBuckets: 0.98 sec
